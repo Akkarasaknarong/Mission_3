@@ -109,8 +109,8 @@ void start()
         uint8_t right_state = digitalRead(IR_RIGHT);
         if (!left_state && !mid_left_state && !mid_right_state && !right_state)
         {
-            motor[0].move(150);
-            motor[1].move(150);
+            motor[0].move(170);
+            motor[1].move(170);
             continue;
         }
         if (!left_state && mid_left_state && !mid_right_state && !right_state)
@@ -131,6 +131,7 @@ void start()
             motor[1].move(255);
             continue;
         }
+
         if (!left_state && !mid_left_state && mid_right_state && !right_state)
         {
             motor[0].move(230);
@@ -150,16 +151,14 @@ void start()
             continue;
         }
         if ((left_state && mid_left_state && mid_right_state && right_state) ||
-            (left_state && mid_left_state && mid_right_state && !right_state) ||
-            (!left_state && mid_left_state && mid_right_state && right_state))
+            (left_state && mid_left_state && mid_right_state) ||
+            (mid_left_state && mid_right_state && right_state))
         {
             motor[0].move(180);
             motor[1].move(180);
-
             delay(500);
             motor[0].stop();
             motor[1].stop();
-
             uint32_t start = millis();
             uint32_t time = 4 * 1e3;
             while (millis() - start < time)

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <PanelSensor.h>
 #include <MOTOR.h>
+#include <PS2X_lib.h>
 
 #define IR_Left 8
 #define IR_Right 9
@@ -44,6 +45,11 @@ void loop() {
       motor_Left.speed(-255);
       motor_Right.speed(255);
     } else {
+      motor_Left.speed(173);
+      motor_Right.speed(167);
+      delay(500);
+      motor_Left.stop ();
+      motor_Right.stop();
       while (true){
         motor_Left.stop();
         motor_Right.stop();

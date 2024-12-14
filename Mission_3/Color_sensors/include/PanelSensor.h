@@ -2,15 +2,14 @@
 #define PanelSensor_h
 
 #include <Arduino.h>
-
 #define THRESHOLD_MULTIPLIER 1.1
 #define MAX_SAFETY 80
 #define MIN_SAFETY 20
 
 class PanelSensor {
     private:
-        const uint8_t* PINS;
         const uint8_t SIZE;
+        const uint8_t* PINS;
         uint16_t* maxValue;
         uint16_t* minValue;
 
@@ -20,7 +19,7 @@ class PanelSensor {
         
     public:
         PanelSensor(uint8_t pins[], const uint8_t size): PINS(pins), SIZE(size) {}
-        void begin(uint16_t max[] = NULL, uint16_t min[] = NULL);
+        void begin(uint16_t max[], uint16_t min[]);
         uint16_t getRaw(uint8_t pin);
         uint16_t getCalibrate(uint8_t pin);
         uint8_t getColor();

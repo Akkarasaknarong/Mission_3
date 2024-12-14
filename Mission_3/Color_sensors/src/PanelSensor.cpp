@@ -22,11 +22,6 @@ bool PanelSensor::inRange(int var, int ref, int plusMinus) {
     return (ref - plusMinus) <= var && var <= (ref + plusMinus);
 }
 
-bool PanelSensor::isLine(uint16_t range) {
-    uint8_t num = SIZE - 1;
-    return inRange(getRaw(0), getRaw(1), range) || inRange(getRaw(num - 1), getRaw(num), range);
-}
-
 byte PanelSensor::minRelated(uint8_t start) {
     uint16_t min = 1023;
     uint8_t index = 0;
@@ -45,14 +40,14 @@ byte PanelSensor::minRelated(uint8_t start) {
 
 uint8_t PanelSensor::getColor() {
     byte colorCode = 0;
-    if (isLine(2)) return 0;
     colorCode = minRelated() << (SIZE / 2) | minRelated(3);
-
     if      (colorCode == 0b001100) return 1;   // Red
     else if (colorCode == 0b010010) return 2;   // Green
     else if (colorCode == 0b100001) return 3;   // Blue
     else return 0;  // Online
 }
+
+int i = 0 ;
 
 uint16_t PanelSensor::getPosition(uint16_t track, uint16_t noise) {
     bool online = false;
@@ -73,8 +68,9 @@ uint16_t PanelSensor::getPosition(uint16_t track, uint16_t noise) {
         lastValue = avg / sum;
         return lastValue;
     }
-    uint16_t max = (SIZE - 1) * 1000;
-    return lastValue < max / 2 ? 0 : max;
+
+    return SIZE * 1000;
+
 }
 
 void PanelSensor::calibrateSensor(uint16_t pauseTime, uint16_t samples) {
@@ -99,14 +95,14 @@ void PanelSensor::calibrateSensor(uint16_t pauseTime, uint16_t samples) {
     }
     Serial.println("FINISH_CalibrateSensor");
 
-    Serial.print("Max = { ");
+    Serial.print("uint16_t maxValue[NUM_SENSORS] = { ");
     for (uint8_t i = 0; i < SIZE; ++i) {
         Serial.print(maxValue[i]);
         Serial.print(", ");
     }
     Serial.println("};");
 
-    Serial.print("Min = { ");
+    Serial.print("uint16_t minValue[NUM_SENSORS] = { ");
     for (uint8_t i = 0; i < SIZE; ++i) {
         Serial.print(minValue[i]);
         Serial.print(", ");
@@ -121,3 +117,12 @@ void PanelSensor::rawSensor() {
     }
     Serial.println();
 }
+
+//  red 010
+//  30 87 29
+
+//  green 001
+// 30 30 380
+
+//  blue 001
+// 30 60 340

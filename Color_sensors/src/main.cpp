@@ -3,10 +3,10 @@
 #include <MOTOR.h>
 #include <PS2X_lib.h>
 
-#define IR_Left_2 8
-#define IR_Left_1 9
-#define IR_Right_1 10
-#define IR_Right_2 11
+#define IR_Left_2 22
+#define IR_Left_1 23
+#define IR_Right_1 24
+#define IR_Right_2 25
 
 #define led_Blue 49
 #define led_Red 51
@@ -66,88 +66,62 @@ void TrackLine()
     int IR_Right_1_state = digitalRead(IR_Right_1);
     int IR_Right_2_state = digitalRead(IR_Right_2);
 
-    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
-    {
-        Error = 0;
-    }
-    if (IR_Left_2_state == 0 && IR_Left_1_state == 1 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
-    {
-        Error = 4.7;
-    }
-    if (IR_Left_2_state == 1 && IR_Left_1_state == 1 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
-    {
-        Error = 4.9;
-    }
-    if (IR_Left_2_state == 1 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
-    {
-        Error = 5.1;
-    }
-    if (IR_Left_2_state == 1 && IR_Left_1_state == 1 && IR_Right_1_state == 1 && IR_Right_2_state == 0)
-    {
-        Error = 5.1;
-    }
-
-
-
-    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 1 && IR_Right_2_state == 0)
-    {
-        Error = -4.7;
-    }
-    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 1 && IR_Right_2_state == 1)
-    {
-        Error = -4.9;
-    }
-    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 1)
-    {
-        Error = -5.1;
-    }
-    if (IR_Left_2_state == 0 && IR_Left_1_state == 1 && IR_Right_1_state == 1 && IR_Right_2_state == 1)
-    {
-        Error = -5.1;
-    }
     if (IR_Left_2_state == 1 && IR_Left_1_state == 1 && IR_Right_1_state == 1 && IR_Right_2_state == 1)
-    {
-        Error = 99;
-    }
-
-    if (Error == 0)
-    {
-        Speed_left = 200;
-        Speed_right = 200;
-        motor_Left.speed(Speed_left);
-        motor_Right.speed(Speed_right);
-    }
-    else if (Error == 99)
     {
         motor_Left.speed(0);
         motor_Right.speed(0);
     }
-    else
+    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
     {
-        Speed_left = 50 * (Error * -1);
-        Speed_right = 50 * Error;
-
-        int minSpeed = -210;
-        if (Error != 5.1 || Error != -5.1)
-        {
-            if (Speed_left < minSpeed)
-            {
-                Speed_left = minSpeed;
-            }
-
-            if (Speed_right < minSpeed)
-            {
-                Speed_right = minSpeed;
-            }
-        }
-
-        motor_Left.speed(Speed_left);
-        motor_Right.speed(Speed_right);
+        motor_Left.speed(180);
+        motor_Right.speed(180);
+    }
+    if (IR_Left_2_state == 0 && IR_Left_1_state == 1 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
+    {
+        motor_Left.speed(-100);
+        motor_Right.speed(230);
+    }
+    if (IR_Left_2_state == 1 && IR_Left_1_state == 1 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
+    {
+        motor_Left.speed(-255);
+        motor_Right.speed(255);
+    }
+    if (IR_Left_2_state == 1 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
+    {
+        motor_Left.speed(-255);
+        motor_Right.speed(255);
+    }
+    if (IR_Left_2_state == 1 && IR_Left_1_state == 1 && IR_Right_1_state == 1)
+    {
+        motor_Left.speed(0);
+        motor_Right.speed(0);
     }
 
-    Serial.print(Speed_left);
-    Serial.print("\t");
-    Serial.println(Speed_right);
+    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 1 && IR_Right_2_state == 0)
+    {
+        motor_Right.speed(-100);
+        motor_Left.speed(230);
+    }
+    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 1 && IR_Right_2_state == 1)
+    {
+        motor_Right.speed(-255);
+        motor_Left.speed(255);
+    }
+    if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 1)
+    {
+        motor_Right.speed(-255);
+        motor_Left.speed(255);
+    }
+    if (IR_Left_1_state == 1 && IR_Right_1_state == 1 && IR_Right_2_state == 1)
+    {
+        motor_Right.speed(0);
+        motor_Left.speed(0);
+    }
+    if (IR_Left_2_state == 1 && IR_Left_1_state == 1 && IR_Right_1_state == 1 && IR_Right_2_state == 1)
+    {
+        motor_Right.speed(-255);
+        motor_Left.speed(255);
+    }
 }
 
 void setup()

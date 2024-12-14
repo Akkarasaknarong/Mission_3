@@ -117,3 +117,12 @@ void PanelSensor::rawSensor() {
     }
     Serial.println();
 }
+
+//  red 010
+//  30 87 29
+
+//  green 001
+// 30 30 380
+
+//  blue 001
+// 30 60 340

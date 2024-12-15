@@ -29,6 +29,7 @@ int Speed_left, Speed_right;
 uint8_t PINS[NUM_SENSORS] = {A0, A1, A2, A3, A4, A5};
 PanelSensor panel(PINS, NUM_SENSORS);
 
+// ปู่บอด
 void display_Color()
 {
     int Color = panel.getColor();
@@ -52,6 +53,46 @@ void display_Color()
         digitalWrite(led_Green, LOW);
     }
     panel.rawSensor();
+}
+
+void display_Color_2()
+{
+    // panel.rawSensor();
+    Serial.print(panel.getRaw(0));
+    Serial.print("\t");
+    Serial.print(panel.getRaw(1));
+    Serial.print("\t");
+    Serial.print(panel.getRaw(2));
+    Serial.print("\t");
+    Serial.print(panel.getRaw(3));
+    Serial.print("\t");
+    Serial.print(panel.getRaw(4));
+    Serial.print("\t");
+    Serial.println(panel.getRaw(5));
+    if (panel.getRaw(4) < panel.getRaw(3) && panel.getRaw(4) < panel.getRaw(5))
+    {
+        digitalWrite(led_Blue, LOW);
+        digitalWrite(led_Red, LOW);
+        digitalWrite(led_Green, HIGH);
+    }
+    else if (panel.getRaw(3) < panel.getRaw(4) && panel.getRaw(3) < panel.getRaw(5))
+    {
+        digitalWrite(led_Blue, LOW);
+        digitalWrite(led_Red, HIGH);
+        digitalWrite(led_Green, LOW);
+    }
+    else if (panel.getRaw(5) < panel.getRaw(3) && panel.getRaw(5) < panel.getRaw(4))
+    {
+        digitalWrite(led_Blue, HIGH);
+        digitalWrite(led_Red, LOW);
+        digitalWrite(led_Green, LOW);
+    }
+    else
+    {
+        digitalWrite(led_Blue, LOW);
+        digitalWrite(led_Red, LOW);
+        digitalWrite(led_Green, LOW);
+    }
 }
 
 void display_IR()
@@ -95,9 +136,8 @@ void TrackLine()
         uint32_t time = 4 * 1e3;
         while (millis() - start < time)
         {
-            display_Color();
+            display_Color_2();
         }
-
         state = 1;
     }
     if (IR_Left_2_state == 0 && IR_Left_1_state == 0 && IR_Right_1_state == 0 && IR_Right_2_state == 0)
@@ -160,18 +200,29 @@ void setup()
     pinMode(IR_Right_2, INPUT);
     Serial.begin(115200);
     error = ps2x.config_gamepad(PS2_CLK, PS2_CMD, PS2_SEL, PS2_DAT, false, false);
+    for (int i = 0; i < 3; i++)
+    {
+        digitalWrite(led_Blue, HIGH);
+        digitalWrite(led_Red, HIGH);
+        digitalWrite(led_Green, HIGH);
+        delay(1500);
+        digitalWrite(led_Blue, LOW);
+        digitalWrite(led_Red, LOW);
+        digitalWrite(led_Green, LOW);
+        delay(500);
+    }
 }
 
 void loop()
 {
-    // display_Color();
+    // display_Color_2();
     if (state == 0)
     {
         TrackLine();
     }
     if (state == 1)
     {
-        display_Color();
+        display_Color_2();
         ps2x.read_gamepad(false, 0);
         if (ps2x.Button(PSB_PAD_UP))
         {
